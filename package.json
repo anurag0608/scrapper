@@ -1,0 +1,11 @@
+{
+  "name": "assignment_internship",
+  "version": "1.0.0",
+  "description": "tool to scrape websites and its subpages",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Anurag_Verma",
+  "license": "ISC"
+}
