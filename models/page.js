@@ -3,7 +3,7 @@ const pageSchema = new mongoose.Schema({
     title: String,
     keywords: String,
     description: String,
-    content: String,
+    content: [{type:String}],
     links: [{type:String}],
     date: {type: Date, default: Date.now},
     imageLinks: [{type:String}],
