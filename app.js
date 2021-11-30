@@ -49,7 +49,7 @@ async function findAllLinks(url, linkArr, currDepth,visitedLinks){
         const pageTitle = $('title').text();
         // console.log($('img'))
         let imageLinks = []
-        let contents = []
+        let contents = ""
         let sublinks = []
         $('img').map(function(){ 
             let src = String($(this).attr('src'))
@@ -99,7 +99,7 @@ async function findAllLinks(url, linkArr, currDepth,visitedLinks){
         }
 
         // Uncomment this to view scrapped object //
-        console.log(Obj)
+        // console.log(Obj)
         
         await Page.create(Obj).catch(err=>{
             console.log(err)
