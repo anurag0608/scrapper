@@ -9,12 +9,32 @@ const axios = require('axios'),
     colors = require('colors'),
     dotenv = require('dotenv').config(); // to access the .env file
 
+
+
+// To connect locally //
+// Use this connection string //
+// const connectionString  = 'mongodb://<username>:<password>@host:port/databaseName' //
+/*
+    example
+    username = admin
+    password = admin123
+    connectionString = mongodb://username:password@localhost:27017/myDB
+
+    Note: If your password contains any special characters like : / ? # [ ] @
+    Please follow this link as special characters needs to be URL encoded
+    https://docs.atlas.mongodb.com/troubleshoot-connection/#special-characters-in-connection-string-password
+*/
 // Connect to MongoDB Atlas using mongoose //
 // I've provided the connection string in the .env file for temporary use //
-mongoose.connect(`mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.nhs71.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`,{
+const connectionString = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.nhs71.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`
+// console.log(connectionString)
+mongoose.connect(connectionString,{
    useNewUrlParser: true,
    useUnifiedTopology: true 
 });
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 async function findAllLinks(url, linkArr, currDepth,visitedLinks){
     let page = await axios.get(url, {
         headers:{
@@ -43,10 +63,11 @@ async function findAllLinks(url, linkArr, currDepth,visitedLinks){
             }
         })
         // console.log($('section').length)
+        // grabbing the contents of the section and removing unwanted tab spaces and white spaces to get clear format text//
         $('section').each(function(i, elm) {
             let someText = $(this).text().replace(/(\r\n|\n|\r|\t)/gm, "");
             someText = someText.replace(/\s+/g," ")
-            contents.push(someText) // for testing do text() 
+            contents+=" || "+someText// for testing do text() 
         });
         // console.log(contents.length)
         let keywords = ""
@@ -72,11 +93,13 @@ async function findAllLinks(url, linkArr, currDepth,visitedLinks){
             keywords: keywords,
             description: $('meta[name="description"]').attr('content'),
             url: url,
-            imageLinks,
-            contents,
-            sublinks
+            imageLinks:imageLinks,
+            content:contents,
+            sublinks:sublinks
         }
-        // console.log(Obj)
+
+        // Uncomment this to view scrapped object //
+        console.log(Obj)
         
         await Page.create(Obj).catch(err=>{
             console.log(err)
@@ -116,7 +139,7 @@ async function start(url, time_threshold){
         time_taken += (stop[0] * 1e9 + stop[1])/1e9
 
         if(time_taken > time_threshold){
-            console.log(colors.green(`Done Crawling! Time Taken : ${time_taken} seconds`))
+            console.log(colors.green(`Done Crawling! Time Taken : ${time_taken} seconds`)) // print time taken to crawl the current section
             return; // done crawling for that amount of time
         }
         let minWait = 500
@@ -126,14 +149,11 @@ async function start(url, time_threshold){
         let waitTime = Math.floor((Math.random() * maxWait) + minWait)
         await sleep(waitTime)
     }
-    // return new Promise((res,rej)=>{
-    //     res(1)
-    // })
 }
 
 const url = "https://www.moneycontrol.com/"
 const sections = ["news/","stocksmarketsindia/","mutualfundindia/"]
-const time_threshold = 3 // in seconds
+const time_threshold = process.env.TIME_THRESHOLD // in seconds
 async function crawl(){
     console.log(colors.blue(`Max Depth : ${process.env.MAX_DEPTH}, Time-Threshold : ${time_threshold} seconds`))
     console.log(colors.green("Now starting.... "))
