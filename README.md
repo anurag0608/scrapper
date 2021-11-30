@@ -11,7 +11,7 @@ More details : https://stackoverflow.com/questions/20579169/dfs-vs-bfs-in-web-cr
 
 So, I used BFS for making this tool to crawl MoneyControl.com
 
-## Steps to excute the code'
+## Steps to excute the code
 
 > unzip the code</br>
 > go to root directory and run `npm install`
