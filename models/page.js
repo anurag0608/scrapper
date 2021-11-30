@@ -4,7 +4,7 @@ const pageSchema = new mongoose.Schema({
     keywords: String,
     description: String,
     content: [{type:String}],
-    links: [{type:String}],
+    sublinks: [{type:String}],
     date: {type: Date, default: Date.now},
     imageLinks: [{type:String}],
     url: String,
